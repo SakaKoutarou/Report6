@@ -1,3 +1,4 @@
+package org.example.jp.ac.uryukyu.ie.e245707;
 public class SlotMachineTest {
     public static void main(String[] args) {
         SlotMachine slotMachine = new SlotMachine(5);

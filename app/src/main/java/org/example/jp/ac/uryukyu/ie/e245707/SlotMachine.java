@@ -1,3 +1,7 @@
+package org.example.jp.ac.uryukyu.ie.e245707;
+import java.util.Random;
+import java.util.Scanner;
+
 public class SlotMachine {
         /**
      * スロットマシンのロジックを担当するクラス。

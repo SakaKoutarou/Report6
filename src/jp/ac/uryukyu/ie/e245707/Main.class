@@ -1,0 +1,116 @@
+// Package指定
+package jp.ac.uryukyu.ie.e205707;
+
+import java.util.Random;
+import java.util.Scanner;
+
+/**
+ * スロットマシンのロジックを担当するクラス。
+ */
+public class SlotMachine {
+    private int coins;
+    private final Random random;
+
+    /**
+     * コンストラクタ。
+     * 初期コイン数を設定。
+     * @param initialCoins 初期コイン数。
+     */
+    public SlotMachine(int initialCoins) {
+        this.coins = initialCoins;
+        this.random = new Random();
+    }
+
+    /**
+     * スロットを回す。
+     * @return スロットの結果（3つの整数）。
+     */
+    public int[] spin() {
+        if (coins <= 0) {
+            throw new IllegalStateException("コインが足りません。");
+        }
+        coins--;
+        return new int[]{
+            random.nextInt(10),
+            random.nextInt(10),
+            random.nextInt(10)
+        };
+    }
+
+    /**
+     * スロットの結果を判定し、コインを追加。
+     * @param result スロットの結果（3つの整数）。
+     * @return 勝利した場合の獲得コイン数。
+     */
+    public int getResult(int[] result) {
+        if (result[0] == result[1] && result[1] == result[2]) {
+            int reward = 10;
+            coins += reward;
+            return reward;
+        }
+        return 0;
+    }
+
+    /**
+     * 現在のコイン数を取得。
+     * @return 現在のコイン数。
+     */
+    public int getCoins() {
+        return coins;
+    }
+}
+
+/**
+ * メインクラス。スロットゲームを実行する。
+ */
+class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        SlotMachine slotMachine = new SlotMachine(10);
+
+        System.out.println("スロットゲームを開始します！ 初期コイン数: " + slotMachine.getCoins());
+        while (slotMachine.getCoins() > 0) {
+            System.out.println("Enterキーを押してスロットを回してください...");
+            scanner.nextLine();
+
+            int[] result = slotMachine.spin();
+            System.out.println("スロット結果: " + result[0] + " " + result[1] + " " + result[2]);
+
+            int reward = slotMachine.getResult(result);
+            if (reward > 0) {
+                System.out.println("おめでとうございます！ " + reward + "コイン獲得！");
+            } else {
+                System.out.println("残念！ また挑戦してください。");
+            }
+
+            System.out.println("現在のコイン数: " + slotMachine.getCoins());
+        }
+
+        System.out.println("ゲーム終了！コインがなくなりました。");
+        scanner.close();
+    }
+}
+
+/**
+ * SlotMachineクラスのテストを行うクラス。
+ */
+class SlotMachineTest {
+    public static void main(String[] args) {
+        SlotMachine slotMachine = new SlotMachine(5);
+
+        // 初期コイン数のテスト
+        assert slotMachine.getCoins() == 5 : "初期コイン数が正しく設定されていません。";
+
+        // スロットを回してコインが減少することを確認
+        slotMachine.spin();
+        assert slotMachine.getCoins() == 4 : "コインが正しく減少していません。";
+
+        // スロットの結果判定テスト
+        int[] winningResult = {7, 7, 7};
+        int reward = slotMachine.getResult(winningResult);
+        assert reward == 10 : "勝利時の報酬が正しくありません。";
+        assert slotMachine.getCoins() == 14 : "コインが正しく追加されていません。";
+
+        System.out.println("すべてのテストが成功しました！");
+    }
+}
